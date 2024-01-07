@@ -9,8 +9,13 @@ namespace EvaExchange.Shared
 {
     public class TradeModel
     {
+        [Required]
+
         public int ClientId { get; set; }
+        [Required]
+
         public int ShareId { get; set; }
-        public int Quentity { get; set; }
+        [Required]
+        public int Quentity { get; set; } = 1;
     }
 }

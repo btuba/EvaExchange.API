@@ -33,6 +33,10 @@ namespace EvaExchange.Services
 
         public async Task<bool> Buy(TradeModel trade)
         {
+            if(trade.Quentity<= 0)
+            {
+                throw new Exception("Quentity must be greater than 0.");
+            }
             var isShareExist = await _shareReadRepository.IsExist(trade.ShareId);
 
             if (!isShareExist)
@@ -79,6 +83,11 @@ namespace EvaExchange.Services
 
         public async Task<bool> Sell(TradeModel trade)
         {
+            if (trade.Quentity <= 0)
+            {
+                throw new Exception("Quentity must be greater than 0.");
+            }
+
             var isClientExist = await _clientReadRepository.IsExist(trade.ClientId);
 
             if (!isClientExist)

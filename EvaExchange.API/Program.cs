@@ -15,7 +15,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 // Dependency Injections
 builder.Services.AddScoped<IClientReadRepository, ClientReadRepository>();
 builder.Services.AddScoped<IClientWriteRepository, ClientWriteRepository>();

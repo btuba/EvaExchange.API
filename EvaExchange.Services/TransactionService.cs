@@ -33,56 +33,48 @@ namespace EvaExchange.Services
 
         public async Task<bool> Buy(TradeModel trade)
         {
-            try
+            var isShareExist = await _shareReadRepository.IsExist(trade.ShareId);
+
+            if (!isShareExist)
             {
-                var isShareExist = await _shareReadRepository.IsExist(trade.ShareId);
-
-                if (!isShareExist)
-                {
-                    throw new Exception("Share could not be found.");
-                }
-
-                var isClientExist = await _clientReadRepository.IsExist(trade.ClientId);
-
-                if (!isClientExist)
-                {
-                    throw new Exception("Customer could not be found.");
-                }
-
-                var clientPortfolio = _portfolioReadRepository.GetWhere(x => x.Client.Id == trade.ClientId).FirstOrDefault();
-
-                if (clientPortfolio == null)
-                {
-                    throw new Exception("Customer's portfolio could not be found.");
-                }
-
-                IQueryable<Price> priceList = (IQueryable<Price>)_priceReadRepository.GetWhere(x => x.Share.Id == trade.ShareId);
-
-                if (priceList == null)
-                {
-                    throw new Exception("Share's price could not be found.");
-                }
-
-                Price latestPrice = priceList.OrderByDescending(x => x.CreatedDate).First();
-
-                var share = await _shareReadRepository.GetByIdAsync(trade.ShareId);
-
-                var transaction = new Transaction
-                {
-                    Action = nameof(Buy),
-                    Portfolio = clientPortfolio,
-                    Share = share,
-                    Quantity = trade.Quentity,
-                    Rate = latestPrice.Rate
-                };
-
-                return await _transactionWriteRepository.AddAsync(transaction);
+                throw new Exception("Share could not be found.");
             }
-            catch (Exception)
+
+            var isClientExist = await _clientReadRepository.IsExist(trade.ClientId);
+
+            if (!isClientExist)
             {
-
-                throw;
+                throw new Exception("Customer could not be found.");
             }
+
+            var clientPortfolio = _portfolioReadRepository.GetWhere(x => x.Client.Id == trade.ClientId).FirstOrDefault();
+
+            if (clientPortfolio == null)
+            {
+                throw new Exception("Customer's portfolio could not be found.");
+            }
+
+            IQueryable<Price> priceList = (IQueryable<Price>)_priceReadRepository.GetWhere(x => x.Share.Id == trade.ShareId);
+
+            if (priceList == null)
+            {
+                throw new Exception("Share's price could not be found.");
+            }
+
+            Price latestPrice = priceList.OrderByDescending(x => x.CreatedDate).First();
+
+            var share = await _shareReadRepository.GetByIdAsync(trade.ShareId);
+
+            var transaction = new Transaction
+            {
+                Action = nameof(Buy),
+                Portfolio = clientPortfolio,
+                Share = share,
+                Quantity = trade.Quentity,
+                Rate = latestPrice.Rate
+            };
+
+            return await _transactionWriteRepository.AddAsync(transaction);
         }
 
         public async Task<bool> Sell(TradeModel trade)

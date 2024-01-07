@@ -1,4 +1,5 @@
 ﻿using EvaExchange.API.Controllers;
+using EvaExchange.API.Middlewares;
 using EvaExchange.DataAccess.Context;
 using EvaExchange.DataAccess.Repositories;
 using EvaExchange.DataAccess.Repositories.Impl;
@@ -43,6 +44,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 

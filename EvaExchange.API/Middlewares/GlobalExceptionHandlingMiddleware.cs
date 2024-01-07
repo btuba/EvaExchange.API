@@ -18,8 +18,6 @@ namespace EvaExchange.API.Middlewares
             try
             {
                 await _next(context);
-                string responseBody = new StreamReader(context.Request.Body).ReadToEnd();
-                context.Request.Body.Position = 0;
             }
             catch (Exception e)
             {
